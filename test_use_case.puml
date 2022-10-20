@@ -2,10 +2,10 @@
 
 left to right direction
 rectangle "System Boundry" {
-    usecase (withdraw cash) as UC1
-    usecase (deposit cash) as UC2
-    usecase (check balance)
-    usecase (check atm balance)
+    usecase "withdraw cash" as UC1
+    usecase "deposit cash" as UC2
+    usecase "check balance" as UC3
+    usecase "check atm balance" as UC4
 }
 :user: --> UC1
 :user: --> UC2
