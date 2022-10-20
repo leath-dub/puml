@@ -1,6 +1,6 @@
 @startuml
 
-package "System Boundry" {
+rectangle "System Boundry" {
     usecase (withdraw cash) as UC1
     usecase (deposit cash) as UC2
     usecase (check balance)
