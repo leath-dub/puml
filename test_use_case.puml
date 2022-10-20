@@ -1,12 +1,12 @@
 @startuml
 
 package "System Boundry" {
-    usecase (withdraw cash) as WC
-    usecase (deposit cash) as DC
+    usecase (withdraw cash) as UC1
+    usecase (deposit cash) as UC2
     usecase (check balance)
     usecase (check atm balance)
 }
-:user: --> WC
-:user: --> DC
+:user: --> UC1
+:user: --> UC2
 
 @enduml
