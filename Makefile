@@ -17,4 +17,9 @@ $(MOST_RECENT_PUML:.puml=).png: $(MOST_RECENT_PUML)
 %:
 	echo "$(URL)/$*.puml" | xargs curl -o $*.png
 
+push: $(MOST_RECENT_PUML)
+	git add $<
+	git commit -m "auto-commit: added/modified $<"
+	git push
+
 .PHONY: push
