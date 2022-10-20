@@ -1,10 +1,12 @@
 @startuml
 
-:user: --> (ATM)
-(First usecase)
-(Another usecase) as (UC2)
-usecase UC3
-usecase (last\nusecase) as UC4
-:actor 2:
+package System Boundry {
+    usecase (withdraw cash) as WC
+    usecase (deposit cash) as DC
+    usecase (check balance)
+    usecase (check atm balance)
+}
+:user: --> WC
+:user: --> DC
 
 @enduml
