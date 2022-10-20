@@ -1,6 +1,6 @@
 @startuml
 
-:actor 1:
+:user: --> (ATM)
 (First usecase)
 (Another usecase) as (UC2)
 usecase UC3
