@@ -7,7 +7,7 @@ rectangle "System Boundry" {
     usecase "check balance" as UC3
     usecase "check atm balance" as UC4
 }
-:user: --> UC1
-:user: --> UC2
+:user: --> UC1 : enters ammount
+:user: --> UC2 : enters cash
 
 @enduml
