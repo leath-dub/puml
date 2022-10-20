@@ -8,6 +8,11 @@ convert
 ```sh
 $ make <<query>>
 ```
+alternatively you can run
+```sh
+$ make
+```
+which will operate on the most recently modified .puml file
 possible variables(to edit in Makefile or directly in commandline)
 ```makefile
 USERNAME=leath-dub
