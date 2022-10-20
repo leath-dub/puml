@@ -1,6 +1,6 @@
 @startuml
 
-package System Boundry {
+package "System Boundry" {
     usecase (withdraw cash) as WC
     usecase (deposit cash) as DC
     usecase (check balance)
