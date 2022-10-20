@@ -16,3 +16,7 @@ alternatively you can run
 $ make
 ```
 which will operate on the most recently modified .puml file
+
+## External
+  Refer to the following link on the syntax for puml
+[plantuml.com](https://plantuml.com)
