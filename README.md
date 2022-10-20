@@ -2,6 +2,9 @@
   This repository uses puml proxy to generate uml diagrams from plain text.
 This is also where I keep all of my uml diagrams(feel free to use as reference)
 
+  This depends on ``wgetpaste`` to work.  It basically uses a pastebin to
+upload uml files and convert via the proxy
+
 ## USAGE
 ``<<query>>`` represents the un-suffixed name of your .puml file you wish to
 convert
@@ -13,10 +16,3 @@ alternatively you can run
 $ make
 ```
 which will operate on the most recently modified .puml file
-possible variables(to edit in Makefile or directly in commandline)
-```makefile
-USERNAME=leath-dub
-REPONAME=puml
-BRANCH=main
-GITHUB_RAW=https://raw.githubusercontent.com
-```
