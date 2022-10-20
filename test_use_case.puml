@@ -1,6 +1,6 @@
 @startuml
 
-:Actor
+:Actor:
 (First usecase)
 (Another usecase) as (UC2)
 usecase UC3
