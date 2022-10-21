@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor Waiter
+actor Chef
+actor Client
+actor Cashier
+rectangle "System Boundry" {
+  Waiter -- (Order\nFood)
+  (Order\nFood) <.. (Order\nWine):<<extends>>
+  (Order\nFood) --- Chef
+  (Cook\nFood) - Chef
+  Waiter -- (Serve\nFood)
+  (Serve\nFood) <. (Serve\nWine):<<extends>>
+  Client -- (Order\nFood)
+  Client -- (Eat\nFood)
+  (Eat\nFood) <.. (Drink\nWine):<<extends>>
+  Cashier -- (Pay for\nFood)
+  Client -- (Pay for\nFood)
+  (Pay for\nFood) <. (Pay for\nWine):<<extends>>
+}
+@enduml
