@@ -1,0 +1,19 @@
+@startuml
+skinparam packageStyle rectangle
+rectangle API {
+  rectangle usecases #lightgreen {
+    (check balance) <.. (balance history) : <<extends>>
+    note "search charges\nsearch customers\nsearch subscriptions" as N1
+    (search) <|-- N1
+
+    note "attach payment method\ndelete payment menthod" as NPM
+    (create charge) <.right. (update charge) : <<extends>>
+    (create charge) <.. (create payment\nintent) : <<includes>>
+    (update customer\npayment methods) <.. (create payment\nintent) : <<extends>>
+    (update customer\npayment methods) <|-- NPM
+
+    (update customer)
+  }
+  (API request) <|-- usecases
+}
+@enduml
