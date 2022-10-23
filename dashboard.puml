@@ -1,0 +1,66 @@
+@startuml
+top to bottom direction
+skinparam shadowing true
+skinparam padding 1
+skinparam pagemargin zz
+skinparam nodesep 10
+skinparam ranksep 5
+scale 2
+'skinparam linetype polyline
+!$TAN = "#fefece"
+!$RED = "#a80036"
+<style>
+  usecase {
+    backgroundColor $TAN
+    LineColor $RED
+    LineThickness 2
+  }
+  arrow {
+    backgroundColor $RED
+    LineColor $RED
+  }
+  actor {
+    backgroundColor $TAN
+    LineColor $RED
+    LineThickness 2
+  }
+</style>
+skinparam usecase {
+  backgroundColor<<error>> pink
+  borderColor<<error>> red
+  borderStyle<<error>> dashed
+  FontColor<<error>> red
+}
+:business owner: <<user>> as BO
+rectangle Dashboard {
+  (login) as LGN
+  (invalid credentials) as IVC <<error>>
+  (view api\nkeys) as VAK
+  (view payments) as VPT
+  (view analytics) as VAN
+  (view settings) as VST
+  (change settings) as CST
+  (make dispute) as MD
+  CST ..> VST : <<extends>>
+  rectangle " " as RVP {
+    (view payments in) -[hidden]down-> (view payments out)
+    (cancel subscription) as CSS
+    (view payments out) -[hidden]down-> CSS
+    (make refund) as MRF
+    CSS -[hidden]down-> MRF
+    (manage invoices) as MIVS
+    MRF -[hidden]down-> MIVS
+  }
+  CST <-[hidden]up- IVC
+  'CST <-[hidden]up- VAK
+  VAN <-[hidden]up- VST
+  VPT <|-down- RVP
+  LGN <.. IVC : <<extends>>
+  MD <-[hidden]up- VAN
+}
+BO -> VPT
+BO -> LGN
+BO -> VAK
+BO -> CST
+BO -> VAN
+@enduml

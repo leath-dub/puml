@@ -1,6 +1,11 @@
 @startuml
 top to bottom direction
 skinparam shadowing true
+skinparam padding 1
+skinparam pagemargin zz
+skinparam nodesep 10
+skinparam ranksep 5
+scale 2
 'skinparam linetype polyline
 !$TAN = "#fefece"
 !$RED = "#a80036"
@@ -26,32 +31,32 @@ skinparam usecase {
   borderStyle<<error>> dashed
   FontColor<<error>> red
 }
-:business owner: <<user>> as BO
+' :business owner: <<user>> as BO
 :developer: <<user>> as DEV
 ' skinparam linetype ortho
-rectangle Dashboard {
-  (login) as LGN
-  (invalid credentials) as IVC <<error>>
-  (view api\nkeys) as VAK
-  (view payments) as VPT
-  (view analytics) as VAN
-  (view settings) as VST
-  (change settings) as CST
-  CST ..> VST : <<extends>>
-  rectangle " " as RVP {
-    (view payments in) -[hidden]down-> (view payments out)
-    (cancel subscription) as CSS
-    (view payments out) -[hidden]down-> CSS
-    (make refund) as MRF
-    CSS -[hidden]down-> MRF
-    (manage invoices) as MIVS
-    MRF -[hidden]down-> MIVS
-  }
-  CST <-[hidden]up- IVC
-  VAN <-[hidden]up- VST
-  VPT <|-down- RVP
-  LGN <.. IVC : <<extends>>
-}
+'rectangle Dashboard {
+'  (login) as LGN
+'  (invalid credentials) as IVC <<error>>
+'  (view api\nkeys) as VAK
+'  (view payments) as VPT
+'  (view analytics) as VAN
+'  (view settings) as VST
+'  (change settings) as CST
+'  CST ..> VST : <<extends>>
+'  rectangle " " as RVP {
+'    (view payments in) -[hidden]down-> (view payments out)
+'    (cancel subscription) as CSS
+'    (view payments out) -[hidden]down-> CSS
+'    (make refund) as MRF
+'    CSS -[hidden]down-> MRF
+'    (manage invoices) as MIVS
+'    MRF -[hidden]down-> MIVS
+'  }
+'  CST <-[hidden]up- IVC
+'  VAN <-[hidden]up- VST
+'  VPT <|-down- RVP
+'  LGN <.. IVC : <<extends>>
+'}
 rectangle API {
   rectangle " " as UC {
     ' Customer
@@ -89,7 +94,7 @@ rectangle API {
     ' Payouts & refunds
     (create payout) as CP
     (check\nStripe balance) as CSB
-    (insufficient funds) as EIF <<error>>
+    (insufficient\nfunds) as EIF <<error>>
     (cancelation) as EC <<error>>
     (create refund) as CR
     (check balance\nhistory) .right.> CSB : <<extends>>
@@ -107,7 +112,7 @@ rectangle API {
     (check disputes) as CHD
     (close dispute) as CLD
     (supply evidence) as SE
-    SE .up.> CHD : <<extends>>
+    SE ..up.> CHD : <<extends>>
     CLD .up.> CHD : <<extends>>
     CR -[hidden]down-> CHD
 
@@ -128,7 +133,7 @@ rectangle API {
 
     CH .down.> US : <<extends>>
     ' invoices
-    (update invoice) as UIC
+    (update\ninvoice) as UIC
     rectangle " " as R5 {
       (create invoice) <.. (send invoice) : <<extends>>
       (create invoice) ..> (save draft) : <<includes>>
@@ -142,14 +147,14 @@ rectangle API {
   CAR <|-down- UC
   CAR <.left. (add\nmetadata) : <<extends>>
 }
-Dashboard <|- API
-BO -> VPT
-BO -> LGN
-BO -> VAK
-BO -> CST
-BO -> VAN
+'Dashboard <|- API
+'BO -> VPT
+'BO -> LGN
+'BO -> VAK
+'BO -> CST
+'BO -> VAN
 DEV --> CAR
-BO <-[hidden] DEV
-BO <-> DEV : communicate
+'BO <-[hidden] DEV
+'BO <-> DEV : communicate
 
 @enduml
