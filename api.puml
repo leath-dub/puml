@@ -1,19 +1,58 @@
 @startuml
-skinparam packageStyle rectangle
+top to bottom direction
+skinparam shadowing true
+' skinparam linetype ortho
 rectangle API {
-  rectangle usecases #lightgreen {
-    (check balance) <.. (balance history) : <<extends>>
-    note "search charges\nsearch customers\nsearch subscriptions" as N1
-    (search) <|-- N1
+  rectangle usecases {
 
-    note "attach payment method\ndelete payment menthod" as NPM
-    (create charge) <.right. (update charge) : <<extends>>
-    (create charge) <.. (create payment\nintent) : <<includes>>
-    (update customer\npayment methods) <.. (create payment\nintent) : <<extends>>
-    (update customer\npayment methods) <|-- NPM
+    ' Customer
+    (update\ncustomer) as C
+    rectangle " " as R1 {
+      (create\ncustomer) ..> (create\npayment source) : <<includes>>
+      (delete\ncustomer)
+    }
+    C <|-down- R1
 
-    (update customer)
+    ' Search part
+    (search) as S
+    rectangle " " as R2 {
+        (search\ncharges)
+        (search\ncustomers)
+        (search\nsubscriptions)
+    }
+    S <|-down- R2
+
+    ' Charge
+    (create charge) as CH
+    CH <.down. (update charge) : <<extends>>
+
+    (update customer\npayment methods) as UCP
+    rectangle " " as R3 {
+      (attach payment\nmethod)
+      (delete payment\nmethod)
+    }
+    CH --[hidden]down-> UCP
+    UCP <|-down- R3
+    R1 --[hidden]down-> CH
+
+    (create payment\nintents) as CPI
+    CPI .right.> UCP : <<extends>>
+    CPI .up.> CH : <<includes>>
+
+    ' Payouts & refunds
+    (create payout) as CP
+    (check\nStripe balance) as CSB
+    (error\ninsufficient funds) as EIF
+    (error cancelation) as EC
+    (create refund) as CR
+    CP .up.> CSB : <<includes>>
+    CSB <.down. EIF : <<extends>>
+    R2 --[hidden]down-> CSB
+    CP <.down. EC : <<extends>>
+    CR <.up. EC : <<extends>>
+    CR <.up. EIF : <<extends>>
   }
-  (API request) <|-- usecases
+  (create\nAPI request) <|-down- usecases
+  (create\nAPI request) <.right. (add\nmetadata) : <<extends>>
 }
 @enduml
