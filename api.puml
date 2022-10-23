@@ -1,14 +1,63 @@
 @startuml
 top to bottom direction
 skinparam shadowing true
+'skinparam linetype polyline
+!$TAN = "#fefece"
+!$RED = "#a80036"
+<style>
+  usecase {
+    backgroundColor $TAN
+    LineColor $RED
+    LineThickness 2
+  }
+  arrow {
+    backgroundColor $RED
+    LineColor $RED
+  }
+  actor {
+    backgroundColor $TAN
+    LineColor $RED
+    LineThickness 2
+  }
+</style>
+skinparam usecase {
+  backgroundColor<<error>> pink
+  borderColor<<error>> red
+  borderStyle<<error>> dashed
+  FontColor<<error>> red
+}
+:business owner: <<user>> as BO
+:developer: <<user>> as DEV
 ' skinparam linetype ortho
+rectangle Dashboard {
+  (login) as LGN
+  (invalid credentials) as IVC <<error>>
+  (view api\nkeys) as VAK
+  (view payments) as VPT
+  (view analytics) as VAN
+  (view settings) as VST
+  (change settings) as CST
+  CST ..> VST : <<extends>>
+  rectangle " " as RVP {
+    (view payments in) -[hidden]down-> (view payments out)
+    (cancel subscription) as CSS
+    (view payments out) -[hidden]down-> CSS
+    (make refund) as MRF
+    CSS -[hidden]down-> MRF
+    (manage invoices) as MIVS
+    MRF -[hidden]down-> MIVS
+  }
+  CST <-[hidden]up- IVC
+  VAN <-[hidden]up- VST
+  VPT <|-down- RVP
+  LGN <.. IVC : <<extends>>
+}
 rectangle API {
-  rectangle usecases {
-
+  rectangle " " as UC {
     ' Customer
     (update\ncustomer) as C
     rectangle " " as R1 {
-      (create\ncustomer) ..> (create\npayment source) : <<includes>>
+      (create\ncustomer) .right.> (create\npayment\nsource) : <<includes>>
       (delete\ncustomer)
     }
     C <|-down- R1
@@ -16,9 +65,8 @@ rectangle API {
     ' Search part
     (search) as S
     rectangle " " as R2 {
-        (search\ncharges)
-        (search\ncustomers)
-        (search\nsubscriptions)
+        (search\ncharges) -[hidden]down-> (search\ncustomers)
+        (search\ncustomers) -[hidden]down-> (search\nsubscriptions)
     }
     S <|-down- R2
 
@@ -28,8 +76,7 @@ rectangle API {
 
     (update customer\npayment methods) as UCP
     rectangle " " as R3 {
-      (attach payment\nmethod)
-      (delete payment\nmethod)
+      (attach payment\nmethod) -[hidden]up-> (delete payment\nmethod)
     }
     CH --[hidden]down-> UCP
     UCP <|-down- R3
@@ -42,17 +89,67 @@ rectangle API {
     ' Payouts & refunds
     (create payout) as CP
     (check\nStripe balance) as CSB
-    (error\ninsufficient funds) as EIF
-    (error cancelation) as EC
+    (insufficient funds) as EIF <<error>>
+    (cancelation) as EC <<error>>
     (create refund) as CR
+    (check balance\nhistory) .right.> CSB : <<extends>>
     CP .up.> CSB : <<includes>>
-    CSB <.down. EIF : <<extends>>
-    R2 --[hidden]down-> CSB
+    CSB <-[hidden]down- EIF
+    EIF .right.> CP : <<extends>>
+    R1 -[hidden]down-> CSB
     CP <.down. EC : <<extends>>
     CR <.up. EC : <<extends>>
     CR <.up. EIF : <<extends>>
+
+    CH <.right. EIF : <<extends>>
+
+    ' disputes & subscriptions
+    (check disputes) as CHD
+    (close dispute) as CLD
+    (supply evidence) as SE
+    SE .up.> CHD : <<extends>>
+    CLD .up.> CHD : <<extends>>
+    CR -[hidden]down-> CHD
+
+    (update subscription) as US
+    US -[hidden]-> R3
+    rectangle " " as R4 {
+      (cancel\nsubscription) -[hidden]down-> (create\nsubscription)
+      (attach customer) .up.> (create\nsubscription) : <<extends>>
+    }
+    R4 -up-|> US
+    US -[hidden]-> CR
+
+    ' Tokens
+    (get token) as GT
+    (verify\ncustomer id) as VCI
+    GT .right.> VCI : <<includes>>
+    C -[hidden]right-> GT
+
+    CH .down.> US : <<extends>>
+    ' invoices
+    (update invoice) as UIC
+    rectangle " " as R5 {
+      (create invoice) <.. (send invoice) : <<extends>>
+      (create invoice) ..> (save draft) : <<includes>>
+      (delete draft invoice)
+      R5 -up-|> UIC
+      R4 -[hidden]down-> UIC
+      R3 -[hidden]down-> UIC
+    }
   }
-  (create\nAPI request) <|-down- usecases
-  (create\nAPI request) <.right. (add\nmetadata) : <<extends>>
+  (create\nAPI request) as CAR
+  CAR <|-down- UC
+  CAR <.left. (add\nmetadata) : <<extends>>
 }
+Dashboard <|- API
+BO -> VPT
+BO -> LGN
+BO -> VAK
+BO -> CST
+BO -> VAN
+DEV --> CAR
+BO <-[hidden] DEV
+BO <-> DEV : communicate
+
 @enduml
